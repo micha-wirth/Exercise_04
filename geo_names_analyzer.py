@@ -1,3 +1,6 @@
+#! /usr/bin/env python
+
+
 def read_info_from_file():
     """
     Read information from the GeoNames.org
@@ -17,16 +20,26 @@ def read_info_from_file():
 
     zip_name = zip_list[0] if len(zip_list) != 0 else None
 
-    # zip_name = 'allCountries_04.zip'
+    my_dict = list(dict())
+    i = 0
+
     if zipfile.is_zipfile(filename=zip_name):
         with zipfile.ZipFile(file=zip_name, mode='r') as my_zip:
             txt_list = my_zip.namelist()
-            txt_name = txt_list[0]
+            txt_name = txt_list[0] if len(txt_list) != 0 else None
             with my_zip.open(name=txt_name, mode='r') as my_text:
                 for line in my_text:
                     my_line = (bytes(line).decode(encoding='utf-8').split())
-                    print(type(my_line))
-                    break
+                    if my_line[6] == 'P' and len(my_line) > 14 and my_line[14].isnumeric():
+                        if int(my_line[14]) > 0:
+                            my_dict.append({'name': my_line[1], 'inhabitants': int(my_line[14]), 'code': my_line[8]})
+                            i += 1
+
+                            if i == 5:
+                                print(my_dict)
+                                break
+
+
 
 
 
@@ -37,6 +50,19 @@ def read_info_from_file():
             # country_code = line[8]
             #     print(line)
 
+def compute_most_frequent_city_names_by_sortin():
+    """
+    Calculates the most frequent worl-wide
+    locality names via sorting.
+    :return:
+    """
+
+
+def compute_most_frequent_city_names_by_map():
+    """
+    Calculates the most most frequent world-wide
+    locality names via an associative array.
+    """
 
 if __name__ == "__main__":
     import doctest

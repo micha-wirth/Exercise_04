@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from collections import Counter
+import timeit
 
 
 def read_info_from_file():
@@ -41,9 +42,12 @@ def read_info_from_file():
                             # my_dict.append({'name': my_line[1], 'inhabitants': int(my_line[14]), 'code': my_line[8]})
                             compute_most_frequent_city_names_by_map_cnt(dict_cnt, my_line[1])
                             compute_most_frequent_city_names_by_map_dct(dict_map, my_line[1])
+                            
 
     print(dict_cnt.most_common(3))
     print(Counter(dict_map).most_common(3))
+    compare_runtime(dict_cnt)
+    compare_runtime(Counter(dict_map))
 
 
 def compute_most_frequent_city_names_by_sorting():
@@ -59,7 +63,7 @@ def compute_most_frequent_city_names_by_map_cnt(d, name):
     Calculates the most most frequent world-wide
     locality names via an associative array.
     """
-    d.update(dict(name=1))
+    d.update({name: 1})
     return d
 
 
@@ -70,6 +74,16 @@ def compute_most_frequent_city_names_by_map_dct(d, name):
     """
     d.setdefault(name, 0)
     d[name] += 1
+
+
+def compare_runtime(d):
+    """    Calculates the 3 most-frequent locality names
+    world-wide.
+    :return:
+    """
+    d.most_common(3)
+    print(timeit.timeit('compute_most_frequent_city_names_by_map_cnt', globals=globals()))
+    print(timeit.timeit('compute_most_frequent_city_names_by_map_dct', globals=globals()))
 
 
 if __name__ == "__main__":

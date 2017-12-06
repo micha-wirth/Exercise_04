@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+from collections import Counter
+
 
 def read_info_from_file():
     """
@@ -11,6 +13,8 @@ def read_info_from_file():
     import glob
     import zipfile
 
+
+
     # with zipfile.ZipFile(file='allCountries_04.zip', mode='r') as my_zip:
     #     with my_zip.open(name='allCountries.txt', mode='r') as my_text:
     #         print(my_text.readline().decode(encoding='utf-8').split())
@@ -21,7 +25,9 @@ def read_info_from_file():
     zip_name = zip_list[0] if len(zip_list) != 0 else None
 
     my_dict = list(dict())
-    i = 0
+
+    dict_cnt = Counter(dict())
+    dict_map = dict()
 
     if zipfile.is_zipfile(filename=zip_name):
         with zipfile.ZipFile(file=zip_name, mode='r') as my_zip:
@@ -32,37 +38,39 @@ def read_info_from_file():
                     my_line = (bytes(line).decode(encoding='utf-8').split())
                     if my_line[6] == 'P' and len(my_line) > 14 and my_line[14].isnumeric():
                         if int(my_line[14]) > 0:
-                            my_dict.append({'name': my_line[1], 'inhabitants': int(my_line[14]), 'code': my_line[8]})
-                            i += 1
+                            # my_dict.append({'name': my_line[1], 'inhabitants': int(my_line[14]), 'code': my_line[8]})
+                            compute_most_frequent_city_names_by_map_cnt(dict_cnt, my_line[1])
+                            compute_most_frequent_city_names_by_map_dct(dict_map, my_line[1])
 
-                            if i == 5:
-                                print(my_dict)
-                                break
-
-
+    print(dict_cnt.most_common(3))
+    print(Counter(dict_map).most_common(3))
 
 
-
-
-            # locality = line[6] is 'P'
-            # name = line[1]
-            # inhabitants = line[14]
-            # country_code = line[8]
-            #     print(line)
-
-def compute_most_frequent_city_names_by_sortin():
+def compute_most_frequent_city_names_by_sorting():
     """
-    Calculates the most frequent worl-wide
+    Calculates the most frequent world-wide
     locality names via sorting.
     :return:
     """
 
 
-def compute_most_frequent_city_names_by_map():
+def compute_most_frequent_city_names_by_map_cnt(d, name):
     """
     Calculates the most most frequent world-wide
     locality names via an associative array.
     """
+    d.update(dict(name=1))
+    return d
+
+
+def compute_most_frequent_city_names_by_map_dct(d, name):
+    """
+    Calculates the most most frequent world-wide
+    locality names via an associative array.
+    """
+    d.setdefault(name, 0)
+    d[name] += 1
+
 
 if __name__ == "__main__":
     import doctest

@@ -2,6 +2,7 @@
 
 from collections import Counter
 import timeit
+import time
 
 
 def read_info_from_file():
@@ -27,6 +28,8 @@ def read_info_from_file():
 
     my_dict = list(dict())
 
+    my_list = list()
+
     dict_cnt = Counter(dict())
     dict_map = dict()
 
@@ -40,9 +43,11 @@ def read_info_from_file():
                     if my_line[6] == 'P' and len(my_line) > 14 and my_line[14].isnumeric():
                         if int(my_line[14]) > 0:
                             # my_dict.append({'name': my_line[1], 'inhabitants': int(my_line[14]), 'code': my_line[8]})
+                            compute_most_frequent_city_names_by_sorting(my_list, my_line[1])
                             compute_most_frequent_city_names_by_map_cnt(dict_cnt, my_line[1])
                             compute_most_frequent_city_names_by_map_dct(dict_map, my_line[1])
-                            
+    my_list.sort(reverse=True)
+    print(my_list[0])
 
     print(dict_cnt.most_common(3))
     print(Counter(dict_map).most_common(3))
@@ -50,12 +55,21 @@ def read_info_from_file():
     compare_runtime(Counter(dict_map))
 
 
-def compute_most_frequent_city_names_by_sorting():
+def compute_most_frequent_city_names_by_sorting(my_list, name):
     """
     Calculates the most frequent world-wide
     locality names via sorting.
     :return:
     """
+    if len(my_list) > 0:
+        for item in my_list:
+            if item[1] == name:
+                my_list[my_list.index(item)] = (item[0]+1, name)
+            else:
+                my_list.append((1, name))
+    else:
+        my_list.append((1, name))
+    return my_list
 
 
 def compute_most_frequent_city_names_by_map_cnt(d, name):
@@ -81,9 +95,12 @@ def compare_runtime(d):
     world-wide.
     :return:
     """
+    start_time = time.process_time()
     d.most_common(3)
-    print(timeit.timeit('compute_most_frequent_city_names_by_map_cnt', globals=globals()))
-    print(timeit.timeit('compute_most_frequent_city_names_by_map_dct', globals=globals()))
+    # print(timeit.timeit('compute_most_frequent_city_names_by_map_cnt', globals=globals()))
+    # print(timeit.timeit('compute_most_frequent_city_names_by_map_dct', globals=globals()))
+    elapsed_time = time.process_time() - start_time
+    print(elapsed_time)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from collections import Counter
+from operator import itemgetter
 import timeit
 import time
 
@@ -17,6 +18,7 @@ def read_info_from_file():
 
 
 
+
     # with zipfile.ZipFile(file='allCountries_04.zip', mode='r') as my_zip:
     #     with my_zip.open(name='allCountries.txt', mode='r') as my_text:
     #         print(my_text.readline().decode(encoding='utf-8').split())
@@ -29,6 +31,8 @@ def read_info_from_file():
     my_dict = list(dict())
 
     my_list = list()
+
+
 
     dict_cnt = Counter(dict())
     dict_map = dict()
@@ -46,8 +50,8 @@ def read_info_from_file():
                             compute_most_frequent_city_names_by_sorting(my_list, my_line[1])
                             compute_most_frequent_city_names_by_map_cnt(dict_cnt, my_line[1])
                             compute_most_frequent_city_names_by_map_dct(dict_map, my_line[1])
-    my_list.sort(reverse=True)
-    print(my_list[0])
+    my_list.sort(key=itemgetter(1), reverse=True)
+    print(my_list[0:3])
 
     print(dict_cnt.most_common(3))
     print(Counter(dict_map).most_common(3))
@@ -64,11 +68,11 @@ def compute_most_frequent_city_names_by_sorting(my_list, name):
     for count, item in enumerate(my_list):
         if item[0] == name:
             my_list[count][1] = item[1] + 1
-        else:
+            break
+        elif count == len(my_list) - 1:
             my_list.append([name, 1])
     else:
         my_list.append([name, 1])
-    return my_list
 
 
 def compute_most_frequent_city_names_by_map_cnt(d, name):

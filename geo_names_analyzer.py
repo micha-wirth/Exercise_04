@@ -61,14 +61,13 @@ def compute_most_frequent_city_names_by_sorting(my_list, name):
     locality names via sorting.
     :return:
     """
-    if len(my_list) > 0:
-        for item in my_list:
-            if item[1] == name:
-                my_list[my_list.index(item)] = (item[0]+1, name)
-            else:
-                my_list.append((1, name))
+    for count, item in enumerate(my_list):
+        if item[0] == name:
+            my_list[count][1] = item[1] + 1
+        else:
+            my_list.append([name, 1])
     else:
-        my_list.append((1, name))
+        my_list.append([name, 1])
     return my_list
 
 
